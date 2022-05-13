@@ -1,0 +1,26 @@
+wheel
+aiohttp
+frozenlist
+yarl
+pytest-aiohttp
+
+# ----- (bdist) ----- #
+
+wget==3.2
+psutil==5.9.0
+tglogging==0.0.3
+python-dotenv==0.19.2
+beautifulsoup4==4.10.0
+Markdown==3.3.6
+pytz==2022.1
+youtube-dl
+yt_dlp==2022.3.8.2
+youtube-search-python==1.6.3
+ffprobe==0.5
+ffmpeg==1.4
+telegraph==2.1.0
+Pillow==9.0.1
+aiorun==2021.10.1
+aiofiles==0.8.0
+git+https://github.com/unknownkz/py-carbon
+telethon-tgcrypto==0.0.3
