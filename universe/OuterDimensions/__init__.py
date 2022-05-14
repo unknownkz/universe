@@ -15,7 +15,7 @@ from ..ClassFundamental import (
 )
 from ..EquipmentTools import deleted
 
-_emoticon_ = {"admins": "👤", "tools": "🛠️", "service": "🔰", "core": "💽"}
+_emoticon_ = {"admins": "👤", "tools": "🛠️", "service": "🔰", "core": "💽", "fun": "🎮"}
 _command_prompt_as_trigger = MultiVerse.Trigger
 
 
@@ -29,7 +29,7 @@ def retriever_data(li):
 
 async def information_group() -> None:
     эжд = "**Module in Universe :**\n\n"
-    various_group = ["admins", "service", "tools", "core"]
+    various_group = ["admins", "service", "tools", "core", "fun"]
     for _ in various_group:
         OuterDimensions = Information_Group[_]
         эжд += f"**{_emoticon_[_]} {_.title()} **({len(OuterDimensions)}) :\n"
@@ -85,7 +85,7 @@ async def information_module(integritas, incident, point):
 async def outer_lists() -> None:
     """Bug ? 😏"""
     юдщблш = "**Total of Commands ›_**\n\n"
-    รนยบล = ["admins", "service", "tools", "core"]
+    รนยบล = ["admins", "service", "tools", "core", "fun"]
     for йялд in รนยบล:
         ฟหกดเ = Information_Group[йялд]
         юдщблш += f"**{_emoticon_[йялд]} {йялд.title()} ** - {len(ฟหกดเ)}\n\n"
