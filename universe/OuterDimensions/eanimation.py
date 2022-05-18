@@ -42,6 +42,7 @@ Fruit = fr | fruit | fruits | pruit | buah
 Earth = et | earth | bumi
 Weather = wt | weather | weathers | cuaca
 Clock = ck | clock | jam
+Monkey = mky | monkey | monyet
 
 | = or ( alias )
 
@@ -65,6 +66,7 @@ async def _(incident):
         list_emoji_earth = ["et", "earth", "bumi"]
         list_emoji_weather = ["wt", "weather", "weathers", "cuaca"]
         list_emoji_clock = ["ck", "clock", "jam"]
+        list_emoji_monkey = ["mky", "monkey", "monyet"]
 
         mn = que(list("🌗🌘🌑🌒🌓🌔🌕🌖"))
         lv = que(list("❤️🧡💛💚💙💜🖤💕💞💓💗💖💘💝"))
@@ -73,6 +75,7 @@ async def _(incident):
         et = que(list("🌏🌍🌎🌎🌍🌏🌍🌎"))
         wt = que(list("☀️🌤⛅️🌥☁️🌧⛈"))
         ck = que(list("🕙🕘🕗🕖🕕🕔🕓🕒🕑🕐🕛"))
+        mky = que(list("🙈🙉🙈🙉🙈🙉🙈🙉"))
 
         point = incident.pattern_match.group(1)
         __emoji = incident.pattern_match.group(2)
@@ -121,6 +124,12 @@ async def _(incident):
                 sleep(0.1)
                 await incident.edit("".join(ck))
                 ck.rotate(1)
+
+        elif point == "-a" and __emoji in list_emoji_monkey:
+            for _ in range(32):
+                sleep(0.1)
+                await incident.edit("".join(mky))
+                mky.rotate(1)
 
         else:
             await incident.reply(eanimation_command)

@@ -13,7 +13,6 @@ from telethon.tl.types import ChatBannedRights
 
 from .. import univ
 from ..EquipmentTools import deleted
-from ..UniverseLogger import UniverseLogger as UL
 
 category = "admins"
 

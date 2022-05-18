@@ -19,7 +19,6 @@ from contextlib import suppress
 from telethon.events import StopPropagation
 from telethon import TelegramClient as McQ
 from telethon import events, types
-from typing import Dict, List, Union
 from telethon.errors import (
     AuthKeyDuplicatedError,
     ChatSendGifsForbiddenError,

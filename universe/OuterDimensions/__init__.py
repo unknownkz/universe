@@ -15,7 +15,13 @@ from ..ClassFundamental import (
 )
 from ..EquipmentTools import deleted
 
-_emoticon_ = {"admins": "👤", "tools": "🛠️", "service": "🔰", "core": "💽", "fun": "🎮"}
+_emoticon_ = {
+    "admins": "👤",
+    "tools": "🛠️",
+    "service": "🔰",
+    "core": "💽",
+    "fun": "🎮",
+}
 _command_prompt_as_trigger = MultiVerse.Trigger
 
 

@@ -6,17 +6,14 @@
 # < https://www.github.com/unknownkz/universe/main/LICENSE/ >
 
 import asyncio
-
 from time import time
 from datetime import datetime
 from typing import Union
-from telethon.utils import get_display_name
+from telethon.utils import get_display_name, add_surrogate
 from bs4 import BeautifulSoup
 from markdown import markdown
-from subprocess import PIPE, Popen, SubprocessError
-from telethon.tl.types import MessageEntityMentionName
-from telethon.tl.types import MessageEntityPre
-from telethon.utils import add_surrogate
+from subprocess import SubprocessError
+from telethon.tl.types import MessageEntityMentionName, MessageEntityPre
 from telethon.tl.tlobject import TLObject
 from functools import partial
 
@@ -285,3 +282,70 @@ def __yaml(obj, indent=0, max_str_len=256, max_byte_len=64):
         return repr(obj)
 
     return "".join(result)
+
+
+async def __guser(
+    incident,
+    seconds_party=None,
+    thirds_party=None,
+    none_party=False,
+    none_edits=False,
+):  # sourcery no-metrics
+    if none_party is False:
+        if seconds_party:
+            args = incident.pattern_match.group(2).split(" ", 1)
+        elif thirds_party:
+            args = incident.pattern_match.group(3).split(" ", 1)
+        else:
+            args = incident.pattern_match.group(1).split(" ", 1)
+    extra = None
+    try:
+        if args:
+            user = args[0]
+            if len(args) > 1:
+                extra = "".join(args[1:])
+            if user.isnumeric() or (
+                user.startswith("-") and user[1:].isnumeric()
+            ):
+                user = int(user)
+            if incident.message.entities:
+                probable_user_mention_entity = incident.message.entities[0]
+                if isinstance(
+                    probable_user_mention_entity, MessageEntityMentionName
+                ):
+                    user_id = probable_user_mention_entity.user_id
+                    user_obj = await incident.client.get_entity(user_id)
+                    return user_obj, extra
+            if isinstance(user, int) or user.startswith("@"):
+                user_obj = await incident.client.get_entity(user)
+                return user_obj, extra
+    except Exception as e:
+        UL.error(str(e))
+    try:
+        if none_party is False:
+            if seconds_party:
+                extra = incident.pattern_match.group(2)
+            else:
+                extra = incident.pattern_match.group(1)
+        if incident.is_private:
+            user_obj = await incident.get_chat()
+            return user_obj, extra
+        if incident.reply_to_msg_id:
+            previous_message = await incident.get_reply_message()
+            if previous_message.from_id is None:
+                if not none_edits:
+                    await incident.edit("Well that's an Anonymous Admin !")
+                return None, None
+            user_obj = await incident.client.get_entity(
+                previous_message.sender_id
+            )
+            return user_obj, extra
+        if not args:
+            if not none_edits:
+                await incident.edit("Pass the User's Username, ID or Reply!")
+            return None, None
+    except Exception as e:
+        UL.error(str(e))
+    if not none_edits:
+        await incident.edit("__Couldn't fetch user to proceed further.__")
+    return None, None

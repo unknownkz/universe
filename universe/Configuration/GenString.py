@@ -16,7 +16,6 @@ from telethon.errors import (
     FloodError,
 )
 
-
 StringCheck: Path = Path(__file__).parent.parent
 
 dirs = ["/root/universe/universe/Configuration/configuration.py"]

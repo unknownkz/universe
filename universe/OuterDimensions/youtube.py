@@ -15,7 +15,7 @@ from telethon.tl.types import DocumentAttributeAudio
 from youtubesearchpython import SearchVideos
 
 from .. import univ, Rooters
-from ..EquipmentTools import deleted, eor
+from ..EquipmentTools import deleted
 from ..UniverseLogger import UniverseLogger as UL
 
 category = "tools"
