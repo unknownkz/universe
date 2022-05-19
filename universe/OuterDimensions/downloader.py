@@ -6,16 +6,19 @@
 # PLease read the GNU Affero General Public License in;
 # < https://www.github.com/unknownkz/universe/main/LICENSE/ >
 
-from textwrap import dedent
+from textwrap import dedent, indent
+from asyncio.exceptions import TimeoutError as AsyncTimeout
 from os import listdir
 from re import split
 from contextlib import suppress
 from youtube_dl import YoutubeDL
 from telethon.tl.types import DocumentAttributeAudio
+from telethon.errors.rpcerrorlist import YouBlockedUserError
+from telethon.tl.functions.contacts import UnblockRequest
 from youtubesearchpython import SearchVideos
 
 from .. import univ, Rooters
-from ..EquipmentTools import deleted
+from ..EquipmentTools import deleted, attributes_media
 from ..UniverseLogger import UniverseLogger as UL
 
 category = "tools"
@@ -234,3 +237,198 @@ async def _(incident):
             await mz.delete()
         (Rooters / videof).unlink(missing_ok=True)
         return await deleted(incident)
+
+
+@univ.universe_cloud(
+    pattern=r"pinterest(?: |$)(-dl)?(?: |$)(.*)",
+    command=("pinterest -dl <url>", category),
+)
+async def _(incident):
+    mkz = incident.chat_id
+    PDOWNLOADER = True
+    point = incident.pattern_match.group(1)
+    options = incident.pattern_match.group(2)
+
+    if not point:
+        return False
+
+    if not options.startswith("https://pin.it/") and not options.startswith(
+        "https://id.pinterest.com/pin/"
+    ):
+        await incident.edit("Link not supported.")
+
+    else:
+        kz = await incident.reply("Process...", silent=True)
+
+    conversation_ = "@HK_pinterest_BOT"
+    async with univ.conversation(conversation_) as __conv:
+        try:
+            __start__ = await __conv.send_message("/start")
+            __response__ = await __conv.get_response(timeout=2)
+            __messages__ = await __conv.send_message(options)
+            __vorp__ = await __conv.get_response(timeout=2)
+            __vorp1__ = await __conv.get_response(timeout=2)
+            await univ.send_read_acknowledge(__conv.chat_id)
+        except YouBlockedUserError:
+            await univ(UnblockRequest(conversation_))
+            __start__ = await __conv.send_message("/start")
+            __response__ = await __conv.get_response(timeout=2)
+            __messages__ = await __conv.send_message(options)
+            __vorp__ = await __conv.get_response(timeout=2)
+            __vorp1__ = await __conv.get_response(timeout=2)
+            await univ.send_read_acknowledge(__conv.chat_id)
+
+        while PDOWNLOADER:
+            try:
+                await univ.send_read_acknowledge(__conv.chat_id)
+                __vorp__ = await __conv.get_response(timeout=2)
+                attributes_media(__vorp__.media)
+                files_down = await univ.download_media(__vorp__, "cache")
+
+                if files_down.endswith(".mp4"):
+                    data_f = files_down
+
+                elif files_down.endswith(".jpg"):
+                    data_f = files_down
+
+                else:
+                    data_f = None
+                    await univ.send_message(
+                        mkz,
+                        "Search not found, can't download from that link.",
+                        reply_to=kz,
+                        silent=True,
+                    )
+
+                data_f = files_down
+                text_source = "<b>Pinterest Downloader</b>\n"
+                text_source += (
+                    "<b>Link Source:</b> "
+                    + "<a href='"
+                    + str(options)
+                    + "'>Click Here</a>"
+                )
+                wrp = indent(text_source, " ", lambda line: False)
+                mz = await kz.edit("Please wait...")
+
+                with open(data_f, mode="rb") as fille:
+                    fille.read()
+                with suppress(BaseException):
+                    await univ.send_file(
+                        mkz,
+                        data_f,
+                        caption=wrp,
+                        parse_mode="html",
+                        reply_to=mz,
+                        silent=True,
+                    )
+                    await univ.delete_messages(
+                        __conv.chat_id,
+                        [
+                            __start__.id,
+                            __response__.id,
+                            __messages__.id,
+                            __vorp__.id,
+                            __vorp1__.id,
+                        ],
+                    )
+                    await mz.delete()
+
+                (Rooters / data_f).unlink(missing_ok=True)
+                return await deleted(incident)
+
+            except AsyncTimeout:
+                break
+
+
+@univ.universe_cloud(
+    pattern=r"twitter(?: |$)(-dl)?(?: |$)(.*)",
+    command=("twitter -dl <url>", category),
+)
+async def _(incident):
+    mkz = incident.chat_id
+    TDOWNLOADER = True
+    point = incident.pattern_match.group(1)
+    options = incident.pattern_match.group(2)
+
+    if not point:
+        return False
+
+    if not options.startswith("https://twitter.com/"):
+        await incident.edit("Link not supported.")
+
+    else:
+        kz = await incident.reply("Process...", silent=True)
+
+    conversation_ = "@DownloadTwitbot"
+    async with univ.conversation(conversation_) as __conv:
+        try:
+            __start__ = await __conv.send_message("/start")
+            __response__ = await __conv.get_response(timeout=5)
+            __messages__ = await __conv.send_message(options)
+            __vorp__ = await __conv.get_response(timeout=5)
+            await univ.send_read_acknowledge(__conv.chat_id)
+        except YouBlockedUserError:
+            await univ(UnblockRequest(conversation_))
+            __start__ = await __conv.send_message("/start")
+            __response__ = await __conv.get_response(timeout=5)
+            __messages__ = await __conv.send_message(options)
+            __vorp__ = await __conv.get_response(timeout=5)
+            await univ.send_read_acknowledge(__conv.chat_id)
+
+        while TDOWNLOADER:
+            try:
+                await univ.send_read_acknowledge(__conv.chat_id)
+                __vorp__ = await __conv.get_response(timeout=5)
+                attributes_media(__vorp__.media)
+                files_down = await univ.download_media(__vorp__, "cache")
+
+                if files_down.endswith(".mp4"):
+                    data_f = files_down
+
+                elif files_down.endswith(".mkv"):
+                    data_f = files_down
+
+                elif files_down.endswith(".jpg"):
+                    data_f = files_down
+
+                else:
+                    data_f = None
+
+                data_f = files_down
+                text_source = "<b>Twitter Downloader</b>\n"
+                text_source += (
+                    "<b>Link Source:</b> "
+                    + "<a href='"
+                    + str(options)
+                    + "'>Click Here</a>"
+                )
+                wrp = indent(text_source, " ", lambda line: False)
+                mz = await kz.edit("Please wait...")
+
+                with open(data_f, mode="rb") as fille:
+                    fille.read()
+                with suppress(BaseException):
+                    await univ.send_file(
+                        mkz,
+                        data_f,
+                        caption=wrp,
+                        parse_mode="html",
+                        reply_to=mz,
+                        silent=True,
+                    )
+                    await univ.delete_messages(
+                        __conv.chat_id,
+                        [
+                            __start__.id,
+                            __response__.id,
+                            __messages__.id,
+                            __vorp__.id,
+                        ],
+                    )
+                    await mz.delete()
+
+                (Rooters / data_f).unlink(missing_ok=True)
+                return await deleted(incident)
+            except AsyncTimeout:
+                break

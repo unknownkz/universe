@@ -58,7 +58,7 @@ async def _(incident):
         )
         text_reason += "\n\n<b>First Name :</b> " + str(user.first_name)
         text_reason += "\n<b>User ID :</b> <code>" + str(user.id) + "</code>"
-        text_reason += "\n<b>Reason :</b> <code>" + str(reason) + "</code>"
+        text_reason += "\n<b>Reason :</b> " + str(reason)
         wrp = indent(text_reason, " ", lambda line: False)
         await kz.reply(wrp, parse_mode="html", silent=True)
     else:
@@ -117,7 +117,7 @@ async def _(incident):
             text_reason += (
                 "\n<b>User ID :</b> <code>" + str(user.id) + "</code>"
             )
-            text_reason += "\n<b>Reason :</b> <code>" + str(reason) + "</code>"
+            text_reason += "\n<b>Reason :</b> " + str(reason)
             wrp = indent(text_reason, " ", lambda line: False)
             await kz.reply(wrp, parse_mode="html", silent=True)
         else:

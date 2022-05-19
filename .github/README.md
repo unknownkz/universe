@@ -6,6 +6,7 @@
 ---
 
 #### Required
+* GNU/Linux: ```Distributions```
 * Platform: ```Linux 64-bit```
 * Program: ```Python >= 3.8.x```
 
