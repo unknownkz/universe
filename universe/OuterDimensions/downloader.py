@@ -58,7 +58,7 @@ async def _(incident):
         url = loots
 
         opsi = {
-            "format": "bestaudio",
+            "format": "bestaudio/best",
             "addmetadata": True,
             "key": "FFmpegMetadata",
             "writethumbnail": True,

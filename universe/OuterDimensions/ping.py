@@ -21,16 +21,16 @@ category = "tools"
 )
 async def ping(incident):
     start = datetime.now()
-    unbelieve = await incident.reply("🛸...")
+    unbelieve = await incident.reply("...🏇")
     sleep(0.3)
-    await unbelieve.edit(".🛸..")
+    await unbelieve.edit("..🏇.")
     sleep(0.3)
-    await unbelieve.edit("..🛸.")
+    await unbelieve.edit(".🏇..")
     sleep(0.3)
-    await unbelieve.edit("...🛸")
+    await unbelieve.edit("🏇...")
     end = datetime.now()
     time_millisecond = (end - start).microseconds / 1000
     millisecond = round((time_millisecond - 0.9) / 3, 4)
-    info_latency = f"› Ping : `{millisecond}` ms"
+    info_latency = f"📡 Latency : `{millisecond}` ms"
     await unbelieve.edit(info_latency)
     await deleted(incident)

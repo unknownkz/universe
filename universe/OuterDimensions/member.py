@@ -19,106 +19,68 @@ category = "admins"
 
 u = MultiVerse.Trigger
 
-promote_commands = f"""
-**Command Guide ›**
-
-__Promote user as admin__
-
-`{u}promote -admin` <reply user>
-`{u}promote -staff` <reply user>
-
-
-**Advantages and Deficiency**
-› `-admin` :
-Can Promote user as Admin, can change info group.
-Auto title (Administrator)
-
-› `-staff` :
-Can't Promote user as Admin, can't change info group.
-Auto title (Staff Admin)
-"""
-
 
 @univ.universe_cloud(
-    pattern="promoted(?: |$)(-admin|-staff)?(?: |$)(.*)",
-    command=("promoted -admin|-staff <reply>", category),
+    pattern=r"promoted(?:\s|$)([\s\S]*)",
+    command=("promoted <reply/username> <nor reason>", category),
     groups_only=True,
     require_admin=True,
 )
 async def _(incident):
-    promo = incident.pattern_match.group(1)
+    user, reason = await __g__(incident)
+    if not user:
+        return
 
-    if promo == "-admin":
-        kz = incident.reply_to_msg_id
-        pr = await incident.reply("`Promoting...`")
-        if kz:
-            replied = await incident.get_reply_message()
-            if replied.from_id:
-                userid = await univ.get_entity(replied.sender_id)
-                try:
-                    ranked = "Administrator"
-                    await univ(
-                        EditAdminRequest(
-                            incident.chat_id,
-                            userid.id,
-                            ChatAdminRights(
-                                add_admins=True,
-                                invite_users=True,
-                                change_info=True,
-                                ban_users=True,
-                                manage_call=True,
-                                delete_messages=True,
-                                pin_messages=True,
-                            ),
-                            rank=str(ranked),
-                        )
-                    )
-                    await pr.edit("`Promoted Successfully.`")
-                except BadRequestError as excp:
-                    await pr.edit(str(excp))
-        else:
-            return await pr.edit("Reply to user")
+    kz = await incident.reply("Promoted...")
 
-    elif promo == "-staff":
-        kz = incident.reply_to_msg_id
-        pr = await incident.reply("`Promoting...`")
-        if kz:
-            replied = await incident.get_reply_message()
-            if replied.from_id:
-                userid = await univ.get_entity(replied.sender_id)
-                try:
-                    ranked = "Staff Admin"
-                    await univ(
-                        EditAdminRequest(
-                            incident.chat_id,
-                            userid.id,
-                            ChatAdminRights(
-                                add_admins=False,
-                                invite_users=True,
-                                change_info=False,
-                                ban_users=True,
-                                manage_call=True,
-                                delete_messages=True,
-                                pin_messages=True,
-                            ),
-                            rank=str(ranked),
-                        )
-                    )
-                    await pr.edit("`Promoted Successfully.`")
-                except BadRequestError as excp:
-                    await pr.edit(str(excp))
-        else:
-            return await pr.edit("Reply to user")
+    rank = "ㅤ"
+    try:
+        await univ(
+            EditAdminRequest(
+                incident.chat_id,
+                user.id,
+                ChatAdminRights(
+                    add_admins=False,
+                    invite_users=True,
+                    change_info=False,
+                    ban_users=True,
+                    manage_call=True,
+                    delete_messages=True,
+                    pin_messages=True,
+                ),
+                rank=str(rank),
+            )
+        )
+    except BadRequestError:
+        await kz.delete()
+        return await incident.edit("I Don't Have Sufficient Permissions!")
 
+    if reason:
+        text_reason = (
+            "#Promoted " + "#Admin " + "#Delegate \n" + "╲╲ ㊋ Released ㊋ ╱╱"
+        )
+        text_reason += "\n\n<b>First Name :</b> " + str(user.first_name)
+        text_reason += "\n<b>User ID :</b> <code>" + str(user.id) + "</code>"
+        text_reason += "\n<b>Reason :</b> " + str(reason)
+        wrp = indent(text_reason, " ", lambda line: False)
+        await kz.reply(wrp, parse_mode="html", silent=True)
     else:
-        await incident.reply(promote_commands)
+        text_nreason = (
+            "#Promoted " + "#Admin " + "#Delegate \n" + "╲╲ ㊋ Released ㊋ ╱╱"
+        )
+        text_nreason += "\n\n<b>First Name :</b> " + str(user.first_name)
+        text_nreason += "\n<b>User ID :</b> <code>" + str(user.id) + "</code>"
+        text_nreason += "\n<b>Reason :</b> <code>N/A</code>"
+        wrps = indent(text_nreason, " ", lambda line: False)
+        await kz.reply(wrps, parse_mode="html", silent=True)
 
+    await kz.delete()
     return await deleted(incident)
 
 
 @univ.universe_cloud(
     pattern=r"demoted(?:\s|$)([\s\S]*)",
-    command=("demoted <reply/username> <reason>", category),
+    command=("demoted <reply/username> <nor reason>", category),
     groups_only=True,
     require_admin=True,
 )
@@ -129,7 +91,7 @@ async def _(incident):
 
     kz = await incident.reply("Demoting...")
 
-    rank = "admin"
+    rank = "ㅤ"
     try:
         await univ(
             EditAdminRequest(
@@ -140,6 +102,7 @@ async def _(incident):
                     invite_users=None,
                     change_info=None,
                     ban_users=None,
+                    manage_call=None,
                     delete_messages=None,
                     pin_messages=None,
                 ),
